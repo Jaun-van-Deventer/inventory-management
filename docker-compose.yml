@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: inventory_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/inventory
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: inventory_frontend
+    ports:
+      - "3000:80"  # Maps Nginx port 80 to localhost:3000
+
+  mongo:
+    image: mongo:5
+    container_name: mongodb
+    environment:
+      - MONGODB_URI=mongodb+srv://admin:admin@inventorydev.fsfux.mongodb.net/?retryWrites=true&w=majority&appName=inventorydev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
